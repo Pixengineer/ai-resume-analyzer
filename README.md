@@ -46,7 +46,7 @@ An AI-powered Resume Analyzer that evaluates resumes, calculates ATS score, dete
 
 ### 1️⃣ Clone the repository
 
-git clone https://github.com/YOUR_USERNAME/ai-resume-analyzer.git
+git clone https://github.com/Pixengineer/ai-resume-analyzer.git
 cd ai-resume-analyzer
 
 ---
