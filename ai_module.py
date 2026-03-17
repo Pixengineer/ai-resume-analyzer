@@ -7,7 +7,7 @@ import os
 import requests
 from utils import truncate_text
 
-HF_API_URL = "https://router.huggingface.co/hf-inference/models/google/flan-t5-base"
+HF_API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
 MAX_RESUME_CHARS = 1200
 REQUEST_TIMEOUT = 30
 
