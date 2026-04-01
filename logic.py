@@ -21,7 +21,7 @@ def detect_skills(text: str) -> Dict[str, List[str]]:
     for category, skills in SKILLS_DB.items():
         found = []
         for skill in skills:
-            # Use word boundary matching for short skills, substring for longer ones
+            
             if len(skill) <= 3:
                 pattern = r'\b' + re.escape(skill) + r'\b'
             else:
@@ -72,27 +72,27 @@ def calculate_ats_score(
     text_lower = text.lower()
     breakdown = {}
 
-    # 1. Skill coverage score (40 pts)
+    
     total_skills_in_db = sum(len(v) for k, v in SKILLS_DB.items() if k != "Soft Skills")
     total_detected = sum(len(v) for k, v in detected_skills.items() if k != "Soft Skills")
-    # Cap at 80 unique skills as "full coverage" benchmark
+   
     coverage_ratio = min(total_detected / 80, 1.0)
     skill_score = round(coverage_ratio * 40, 1)
     breakdown["Skill Coverage"] = skill_score
 
-    # 2. High-value keyword density (25 pts)
+    
     keyword_hits = sum(1 for kw in HIGH_VALUE_KEYWORDS if kw in text_lower)
     density_ratio = min(keyword_hits / len(HIGH_VALUE_KEYWORDS), 1.0)
     keyword_score = round(density_ratio * 25, 1)
     breakdown["Keyword Density"] = keyword_score
 
-    # 3. Section presence (20 pts)
+ 
     critical_sections = ["experience", "education", "skills", "projects"]
     section_hits = sum(1 for s in critical_sections if sections.get(s, False))
     section_score = round((section_hits / len(critical_sections)) * 20, 1)
     breakdown["Section Structure"] = section_score
 
-    # 4. Resume length/content depth (15 pts)
+   
     word_count = len(text.split())
     if word_count >= 400:
         length_score = 15.0
@@ -115,7 +115,7 @@ def get_missing_skills(detected_skills: Dict[str, List[str]]) -> Dict[str, List[
     for category, all_skills in SKILLS_DB.items():
         detected_set = set(detected_skills.get(category, []))
         missing_in_cat = [s for s in all_skills if s not in detected_set]
-        # Limit to top 10 missing per category for readability
+      
         missing[category] = missing_in_cat[:10]
     return missing
 
@@ -131,7 +131,7 @@ def match_job_description(resume_text: str, job_desc: str) -> Tuple[float, List[
     resume_lower = resume_text.lower()
     jd_lower = job_desc.lower()
 
-    # Extract meaningful words from JD (3+ chars, not stopwords)
+    
     stopwords = {
         "the", "and", "for", "with", "you", "are", "this", "that", "have",
         "will", "your", "our", "from", "can", "has", "was", "been", "not",
@@ -141,7 +141,7 @@ def match_job_description(resume_text: str, job_desc: str) -> Tuple[float, List[
         "those", "such", "both", "each", "most", "over", "very", "well"
     }
 
-    # Get all words from JD
+    
     jd_words = re.findall(r'\b[a-z][a-z0-9+#.]{2,}\b', jd_lower)
     jd_keywords = list(set(w for w in jd_words if w not in stopwords))
 
@@ -151,7 +151,7 @@ def match_job_description(resume_text: str, job_desc: str) -> Tuple[float, List[
     matched = [kw for kw in jd_keywords if kw in resume_lower]
     missing = [kw for kw in jd_keywords if kw not in resume_lower]
 
-    # Sort missing by likely importance (longer words tend to be more specific)
+   
     missing_sorted = sorted(missing, key=len, reverse=True)[:20]
     matched_sorted = sorted(matched, key=len, reverse=True)[:20]
 
