@@ -1,8 +1,4 @@
-"""
-app.py - AI Resume Analyzer
-Main Streamlit UI with two-column layout, charts, and AI feedback
-Run with: streamlit run app.py
-"""
+
 
 import io
 import os
@@ -20,7 +16,7 @@ from logic import (
 )
 from ai_module import get_ai_feedback, generate_improve_section
 
-# ─── Page config ──────────────────────────────────────────────────────────────
+
 st.set_page_config(
     page_title="AI Resume Analyzer",
     page_icon="📄",
@@ -28,7 +24,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ─── Custom CSS ───────────────────────────────────────────────────────────────
+
 st.markdown("""
 <style>
   /* Global font */
@@ -109,7 +105,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ─── Hero Header ──────────────────────────────────────────────────────────────
+
 st.markdown("""
 <div class="hero-header">
   <h1>📄 AI Resume Analyzer</h1>
@@ -117,7 +113,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ─── Sidebar ──────────────────────────────────────────────────────────────────
+
 with st.sidebar:
     st.markdown("## ⚙️ Controls")
     uploaded_file = st.file_uploader(
@@ -154,7 +150,7 @@ with st.sidebar:
         "google/flan-t5-base via Hugging Face for AI insights."
     )
 
-# ─── Main Content ─────────────────────────────────────────────────────────────
+
 if uploaded_file is None:
     # Landing / empty state
     st.markdown("---")
@@ -170,7 +166,7 @@ if uploaded_file is None:
         st.write("Receive AI-powered feedback on strengths, gaps, and improvements.")
     st.stop()
 
-# ─── Extract & Process ────────────────────────────────────────────────────────
+
 with st.spinner("Extracting text from PDF..."):
     raw_text = extract_text_from_pdf(uploaded_file)
     resume_text = clean_text(raw_text)
@@ -182,19 +178,19 @@ if not resume_text or count_words(resume_text) < 10:
     )
     st.stop()
 
-# Run analysis
+
 detected_skills = detect_skills(resume_text)
 sections = detect_sections(resume_text)
 ats_score, ats_breakdown = calculate_ats_score(resume_text, detected_skills, sections)
 missing_skills = get_missing_skills(detected_skills)
 word_count = count_words(resume_text)
 
-# JD matching
+
 jd_score, jd_matched, jd_missing = (0.0, [], [])
 if job_desc.strip():
     jd_score, jd_matched, jd_missing = match_job_description(resume_text, job_desc)
 
-# ─── Summary Row ──────────────────────────────────────────────────────────────
+
 total_detected = sum(len(v) for v in detected_skills.values())
 ats_color_hex = {"green": "#28a745", "orange": "#fd7e14", "red": "#dc3545"}[get_ats_color(ats_score)]
 ats_label = get_ats_label(ats_score)
@@ -236,15 +232,13 @@ else:
 
 st.markdown("<hr class='thin'>", unsafe_allow_html=True)
 
-# ─── Two-Column Layout ────────────────────────────────────────────────────────
+
 col_left, col_right = st.columns([1.1, 1], gap="large")
 
-# ══════════════════════════════════════════════
-# LEFT COLUMN
-# ══════════════════════════════════════════════
+
 with col_left:
 
-    # ── ATS Score Breakdown ──
+   
     st.markdown('<div class="section-title">📊 ATS Score Breakdown</div>', unsafe_allow_html=True)
 
     fig_ats, ax_ats = plt.subplots(figsize=(5, 2.6))
@@ -280,7 +274,7 @@ with col_left:
     st.pyplot(fig_ats, use_container_width=True)
     plt.close(fig_ats)
 
-    # ── Skill Distribution Bar Chart ──
+ 
     st.markdown('<div class="section-title">🛠️ Skill Distribution</div>', unsafe_allow_html=True)
 
     skill_cats = [c for c in SKILLS_DB.keys() if c != "Soft Skills"]
@@ -306,7 +300,7 @@ with col_left:
     st.pyplot(fig_skills, use_container_width=True)
     plt.close(fig_skills)
 
-    # ── Category Coverage Pie Chart ──
+   
     st.markdown('<div class="section-title">🥧 Category Coverage</div>', unsafe_allow_html=True)
 
     pie_labels = short_labels
@@ -330,7 +324,7 @@ with col_left:
     st.pyplot(fig_pie, use_container_width=True)
     plt.close(fig_pie)
 
-    # ── Section Detection ──
+   
     st.markdown('<div class="section-title">📑 Resume Section Detection</div>', unsafe_allow_html=True)
     section_labels = {
         "experience": "Work Experience",
@@ -347,12 +341,10 @@ with col_left:
         with sec_cols[i % 2]:
             st.markdown(f"**{label}** &nbsp; {badge}", unsafe_allow_html=True)
 
-# ══════════════════════════════════════════════
-# RIGHT COLUMN
-# ══════════════════════════════════════════════
+
 with col_right:
 
-    # ── Detected Skills ──
+ 
     st.markdown('<div class="section-title">✅ Detected Skills</div>', unsafe_allow_html=True)
 
     category_icons = {
@@ -370,7 +362,7 @@ with col_right:
                 pills = " ".join(f'<span class="skill-pill">{s}</span>' for s in skills)
                 st.markdown(pills, unsafe_allow_html=True)
 
-    # ── Missing Skills ──
+   
     st.markdown('<div class="section-title">❌ Missing Skills</div>', unsafe_allow_html=True)
     st.caption("Top skills from each category not found in your resume:")
 
@@ -381,11 +373,11 @@ with col_right:
                 pills = " ".join(f'<span class="skill-pill-missing">{s}</span>' for s in skills)
                 st.markdown(pills, unsafe_allow_html=True)
 
-    # ── Job Description Matching ──
+   ──
     if job_desc.strip():
         st.markdown('<div class="section-title">🎯 Job Description Match</div>', unsafe_allow_html=True)
 
-        # JD match score meter
+       
         jd_color = "#28a745" if jd_score >= 60 else ("#fd7e14" if jd_score >= 35 else "#dc3545")
         jd_label = "Strong Match" if jd_score >= 60 else ("Moderate Match" if jd_score >= 35 else "Low Match")
 
@@ -420,7 +412,7 @@ with col_right:
         st.markdown('<div class="section-title">🎯 Job Description Match</div>', unsafe_allow_html=True)
         st.info("Paste a job description in the sidebar to see how well your resume matches it.")
 
-# ─── AI Feedback Section ──────────────────────────────────────────────────────
+
 st.markdown("<hr class='thin'>", unsafe_allow_html=True)
 st.markdown("## 🤖 AI-Powered Feedback")
 
@@ -451,7 +443,7 @@ if run_ai:
                 st.markdown('<div class="section-title">🚀 Improvements</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="fb-box"><p>{feedback.get("improvements", "N/A")}</p></div>', unsafe_allow_html=True)
 
-            # ── Improve My Resume Section ──
+            
             st.markdown("<hr class='thin'>", unsafe_allow_html=True)
             st.markdown("### ✍️ Improve My Resume")
             st.caption("AI-generated improved version of your resume introduction:")
@@ -460,7 +452,7 @@ if run_ai:
             if improved:
                 st.markdown(f'<div class="fb-box"><p>{improved}</p></div>', unsafe_allow_html=True)
 
-            # ── Download Report ──
+           
             st.markdown("<hr class='thin'>", unsafe_allow_html=True)
             st.markdown("### 📥 Download Analysis Report")
 
@@ -525,7 +517,7 @@ if run_ai:
 else:
     st.info("Click **✨ Generate AI Feedback** in the sidebar to receive AI-powered resume analysis.")
 
-# ─── Resume Text Preview ──────────────────────────────────────────────────────
+
 st.markdown("<hr class='thin'>", unsafe_allow_html=True)
 with st.expander("📄 View Extracted Resume Text"):
     st.text(get_text_preview(resume_text, max_chars=2000))
