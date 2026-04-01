@@ -46,7 +46,7 @@ SKILLS_DB = {
     ]
 }
 
-# Important high-value keywords that boost ATS score
+
 HIGH_VALUE_KEYWORDS = [
     "experience", "developed", "implemented", "designed", "built", "created",
     "managed", "led", "optimized", "improved", "deployed", "architected",
@@ -55,7 +55,7 @@ HIGH_VALUE_KEYWORDS = [
     "performance", "results", "impact", "achievement", "award"
 ]
 
-# Resume section keywords for section detection
+
 SECTION_KEYWORDS = {
     "experience": ["experience", "work history", "employment", "professional background", "career"],
     "education": ["education", "academic", "university", "college", "degree", "bachelor", "master", "phd"],
