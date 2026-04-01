@@ -40,13 +40,13 @@ def clean_text(text: str) -> str:
     if not text:
         return ""
 
-    # Replace multiple whitespace/newlines with single space
+  
     text = re.sub(r'\s+', ' ', text)
 
-    # Remove special characters but keep alphanumeric, spaces, dots, commas, slashes, plus
+
     text = re.sub(r'[^\w\s.,/+#@\-()]', ' ', text)
 
-    # Collapse multiple spaces again after special char removal
+    
     text = re.sub(r' +', ' ', text)
 
     return text.strip()
